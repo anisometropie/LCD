@@ -1,8 +1,9 @@
 const readline = require('readline');
-const LCDUnit = require('./LCDUnit');
-const DISPLAY_SIZE = 3;
+const LCDScreen = require('./LCDScreen');
+const UNIT_SIZE = 3;
+const SCREEN_WIDTH = 9;
 
-const display = new LCDUnit(DISPLAY_SIZE, DISPLAY_SIZE);
+const display = new LCDScreen(SCREEN_WIDTH, UNIT_SIZE);
 
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -10,9 +11,10 @@ const rl = readline.createInterface({
 });
 
 function inputLoop() {
-	rl.question('input a number[0-9]: ', input => {
-		if( /\d/.test(input) ) {
-			display.setValue(parseInt(input));
+	const inputRegex = new RegExp(`^\\d{1,${SCREEN_WIDTH}}$`);
+	rl.question('input a number[0-999999999]: ', input => {
+		if( inputRegex.test(input) ) {
+			display.setValue(input);
 			display.show();
 			inputLoop();
 		}
@@ -21,7 +23,7 @@ function inputLoop() {
 			process.exit();
 		}
 		else {
-			console.log('that’s not a number!');
+			console.log('invalid input!');
 			inputLoop();
 		}
 	});
